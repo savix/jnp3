@@ -2,3 +2,15 @@
 apt-get install apache2
 apt-get install libapache2-mod-wsgi
 a2enmod wsgi alias headers deflate
+#zmieniamy /etc/apache2/sites-enables/000-default jak na VM
+#ustawiamy ACLe na projekcie django tak, aby mial do nich dostep demon apache (uzytkownik www-data)
+service apache2 restart
+
+2. Instalacja django ...
+# django
+apt-get install django?
+# djcelery
+apt-get install python-pip
+pip install django-celery
+# rabbitmq
+apt-get install rabbitmq-server
