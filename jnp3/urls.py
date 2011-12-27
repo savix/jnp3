@@ -5,6 +5,8 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^async-test-list$', 'jnp3.photos.views.async_test_list'),
+    (r'^async-test-add$', 'jnp3.photos.views.async_test_add'),
     # Examples:
     # url(r'^$', 'jnp3.views.home', name='home'),
     # url(r'^jnp3/', include('jnp3.foo.urls')),
