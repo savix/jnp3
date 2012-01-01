@@ -154,3 +154,5 @@ LOGGING = {
         },
     }
 }
+
+HS_DBNAME = 'hstest'
