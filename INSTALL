@@ -1,3 +1,7 @@
+0. Dodatkowe pakiety
+#na 'swiezej' maszynie trzeba jeszcze doinstalowac
+apt-get install g++ make openssl-dev
+
 1. Instalacja Apache
 apt-get install apache2
 apt-get install libapache2-mod-wsgi
@@ -29,6 +33,7 @@ tar xvvf mysql-source-5.1.tar.gz
 
 git clone git://github.com/ahiguti/HandlerSocket-Plugin-for-MySQL.git
 # przepisane z https://github.com/ahiguti/HandlerSocket-Plugin-for-MySQL/blob/master/docs-en/installation.en.txt#L70
+cd HandlerSocket-Plugin-for-MySQL
 ./autogen.sh
 ./configure --with-mysql-source=/usr/src/mysql/mysql-5.1 --with-mysql-bindir=/usr/bin --with-mysql-plugindir=/usr/lib/mysql/plugin
 make
