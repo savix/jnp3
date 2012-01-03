@@ -19,6 +19,17 @@ pip install django-celery
 # rabbitmq
 apt-get install rabbitmq-server
 
+# baza danych
+# odpalamy mysql, np:
+mysql --user=root --password=kartofel
+
+create user jnp3;
+create database jnp3;
+grant all privileges on mysql.jnp3 to jnp3 identified by 'jnp3';
+
+cd /home/jnp3/repo/jnp3/
+python manage.py syncdb
+
 3. HandlerSocket
 # niestety nie działa: apt-get install handlersocket-mysql-5.1
 # gdyż coś znóbili w tej wersji, która jest w repo
@@ -56,6 +67,15 @@ open_files_limit = 65535
 
 # Potem mysql na roota np. mysql --user=root --password=kartofel
 install plugin handlersocket soname 'handlersocket.so';
+
+create database hstest;
+use hstest;
+create table photos (
+		id int not null auto_increment primary key,
+		`desc` varchar(1024),
+		status varchar(1)
+		);
+
 # Przetestowanie:
 show processlist;
 
