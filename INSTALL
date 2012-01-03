@@ -63,3 +63,45 @@ show processlist;
 apt-get install build-essential
 apt-get install python-dev
 pip install python-handler-socket
+
+4. Instalacja Varnish Cache
+apt-get install curl
+curl http://repo.varnish-cache.org/debian/GPG-key.txt | apt-key add -
+echo "deb http://repo.varnish-cache.org/ubuntu/ lucid varnish-3.0" >> /etc/apt/sources.list
+apt-get update
+apt-get install varnish
+
+# zmieniamy port apache na 8080:
+# w pliku /etc/apache2/ports.conf zamienic
+NameVirtualHost *:80
+Listen 80
+# na
+NameVirtualHost *:8080
+Listen 8080
+
+# w pliku /etc/apache2/sites-enabled/000-default zamienic
+<VirtualHost *:80>
+# na
+<VirtualHost *:8080>
+
+# jesli apache znajduje sie na innym komputerze, to zamiast powyzszych czynnosci
+# nalezy w pliku /etc/varnish/default.vlc zmienic
+backend default {
+	.host = "127.0.0.1";
+	.port = "8080";
+}
+# w .host wpisujac ip serwera z apache, a port zmieniajac na "80"
+
+# w pliku /etc/default/varnish zmienic
+DAEMON_OPTS="a :6081 \
+            -T localhost:6082 \
+            -f /etc/varnish/default.vcl \
+            -S /etc/varnish/secret \
+            -s malloc,256m"
+# na
+DAEMON_OPTS="-f /etc/varnish/default.vcl \
+             -S /etc/varnish/secret \
+			 -s malloc,1G"
+
+service apache2 restart
+/etc/init.d/varnish force-reload
