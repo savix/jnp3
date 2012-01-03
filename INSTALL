@@ -1,6 +1,6 @@
 0. Dodatkowe pakiety
 #na 'swiezej' maszynie trzeba jeszcze doinstalowac
-apt-get install g++ make openssl-dev
+apt-get install g++ make openssl-dev2
 
 1. Instalacja Apache
 apt-get install apache2
