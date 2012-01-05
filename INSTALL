@@ -25,7 +25,7 @@ mysql --user=root --password=kartofel
 
 create user jnp3;
 create database jnp3;
-grant all privileges on mysql.jnp3 to jnp3 identified by 'jnp3';
+grant all privileges on jnp3.* to 'jnp3'@'localhost' identified by 'jnp3';
 
 cd /home/jnp3/repo/jnp3/
 python manage.py syncdb
