@@ -105,13 +105,8 @@ Listen 8080
 # na
 <VirtualHost *:8080>
 
-# jesli apache znajduje sie na innym komputerze, to zamiast powyzszych czynnosci
-# nalezy w pliku /etc/varnish/default.vlc zmienic
-backend default {
-	.host = "127.0.0.1";
-	.port = "8080";
-}
-# w .host wpisujac ip serwera z apache, a port zmieniajac na "80"
+# w katalogu repo wykonujemy
+cp config/default.vcl /etc/varnish/default.vcl
 
 # w pliku /etc/default/varnish zmienic
 DAEMON_OPTS="a :6081 \
