@@ -5,10 +5,11 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^async-test-list$', 'jnp3.photos.views.async_test_list'),
-    (r'^async-test-add$', 'jnp3.photos.views.async_test_add'),
+#    (r'^async-test-list$', 'jnp3.photos.views.async_test_list'),
+#    (r'^async-test-add$', 'jnp3.photos.views.async_test_add'),
     (r'^$', 'jnp3.views.home'),
     (r'^login$', 'jnp3.views.login'),
+    (r'^logout$', 'jnp3.views.logout'),
     (r'^register$', 'jnp3.views.register'),
     (r'^upload$', 'jnp3.photos.views.upload'),
     # Examples:

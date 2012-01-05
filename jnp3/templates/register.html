@@ -1,0 +1,14 @@
+{% extends "skeleton.html" %}
+
+{% block title %}Utwórz konto{% endblock %}
+
+{% block body %}
+  <h2>Tworzenie konta</h2>
+
+  <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Create the account">
+  </form>
+{% endblock %}
+

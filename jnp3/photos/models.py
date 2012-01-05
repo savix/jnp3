@@ -16,8 +16,9 @@ class Photo:
 #        (u'd', u'deleted'),
 #    )
 
-    def __init__(self, id, desc, status):
+    def __init__(self, id, owner, desc, status):
         self.id = id
+        self.owner = owner
         self.desc = desc
         self.status = status
 
@@ -35,12 +36,18 @@ class Photo:
         hs = Manager()
 
         dat = dict(hs.get(settings.HS_DBNAME, 'photos',
-                ['id', 'desc', 'status'], str(id)))
+                ['id', 'owner', 'desc', 'status'], str(id)))
 
-        return Photo(int(dat['id']), dat['desc'], dat['status'])
+        return Photo(int(dat['id']), int(dat['owner']), dat['desc'], dat['status'])
 
     @staticmethod
-    def create(desc):
+    def find_by_owner(owner, start, end, status='r'):
+        # TODO to trzeba poprawić, może trzeba założyć indeks?
+        # No i skąd wziąć łączną liczbę zdjęć?
+        return Photo.all()
+    
+    @staticmethod
+    def create(owner, desc):
         hs = Manager()
 
         # Trochę kiepskie, ale na początek może starczy
@@ -48,7 +55,7 @@ class Photo:
             try:
                 newId = str(randint(1, MAX_INT))
                 hs.insert(settings.HS_DBNAME, 'photos',
-                    [('id', newId), ('desc', desc), ('status', u'n')])
+                    [('id', newId), ('owner', str(owner)), ('desc', desc), ('status', u'n')])
                 break
             except OperationalError, e:
                 print e
@@ -56,7 +63,7 @@ class Photo:
         else:
             raise Exception("Failed to create Photo!")
 
-        return Photo(newId, desc, u'n')
+        return Photo(newId, owner, desc, u'n')
 
     # Wyłącznie do testowania, potem usunąć
     @staticmethod
@@ -64,7 +71,7 @@ class Photo:
         hs = Manager()
 
         dat = hs.find(settings.HS_DBNAME, 'photos',
-                '>=', ['id', 'desc', 'status'], ['1'], None, MAX_INT)
+                '>=', ['id', 'owner', 'desc', 'status'], ['1'], None, MAX_INT)
 
         ret = []
 

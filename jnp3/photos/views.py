@@ -21,7 +21,7 @@ def async_test_add(request):
 def upload(request):
     photo_file = request.FILES['photo']
     if photo_file.name.endswith('.jpg'):
-        model = Photo.create('brak opisu :(')
+        model = Photo.create(owner=request.user.id, desc=request.POST.get('desc'))
         with open(path.join(settings.UNPROCESSED_PHOTOS_DIR, '%s.jpg' % model.id), 'wb') as f:
             for chunk in photo_file.chunks():
                 f.write(chunk)

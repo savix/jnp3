@@ -72,6 +72,7 @@ create database hstest;
 use hstest;
 create table photos (
 		id int not null auto_increment primary key,
+                owner int,
 		`desc` varchar(1024),
 		status varchar(1)
 		);
@@ -128,3 +129,7 @@ service apache2 restart
 
 5. Biblioteka PIL
 sudo pip install PIL
+
+jak w podsumowaniu będzie napisane, że nie ma jpega, to problem jest opisany tutaj:
+  http://stackoverflow.com/questions/7648200/pip-install-pil-e-tickets-1-no-jpeg-png-support
+robimy pip uninstall PIL, wykonujemy sudo ln .... i instalujemy ponownie

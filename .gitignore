@@ -1,2 +1,6 @@
 *.pyc
 *.swp
+
+jnp3/collected_static
+jnp3/unprocessed_photos
+jnp3/processed_photos

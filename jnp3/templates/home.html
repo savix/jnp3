@@ -1,0 +1,25 @@
+{% extends "skeleton.html" %}
+
+{% block title %}The current time{% endblock %}
+
+{% block body %}
+
+<p>Jesteś obecnie zalogowany! <a href="/logout">wyloguj się</a></p>
+
+{% for photo in photos %}
+    [tu jest zdjęcie o opisie {{photo.desc}}]
+{% endfor %}
+
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    <fieldset>
+        <legend>Dodawanie nowego zdjęcia.</legend>
+        {% csrf_token %}
+        <p><input type="file" name="photo"/></p>
+        <p>Opis: <textarea name="desc"></textarea></p>
+        <p><input type="submit" value="Dodaj zdjęcie!"/></p>
+    </fieldset>
+</form>
+
+<p><img src="{{STATIC_URL}}kot.jpg"/></p>
+
+{% endblock %}
