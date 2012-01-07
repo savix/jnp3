@@ -6,6 +6,8 @@ from django.conf import settings
 from pyhs import Manager
 from pyhs.exceptions import OperationalError
 
+from sphinxsearch import SphinxClient
+
 MAX_INT = 2147483647
 NUM_TRIES = 20
 
@@ -63,6 +65,29 @@ class Photo:
         return ret
 
     @staticmethod
+    def find_by_desc(query, limit, offset, owners=None):
+        # szuka w desc używając sphinxa
+        # można dać zbiór owner ids i wtedy zwróci wynik tylko dla nich
+        sc = SphinxClient()
+        sc.SetServer('localhost', settings.SPHINX_PORT)
+        sc.SetLimits(offset, limit)
+
+        if owners != None:
+            sc.SetFilter('owner', owners)
+
+        ans = sc.Query(query, settings.SPHINX_INDEX)
+
+        ret = []
+
+        for r in ans['matches']:
+            ret.append(Photo.get(r['id']))
+
+        # liczba wszystkich zmatchowanych
+        totalFound = ans['total_found']
+
+        return (ret, totalFound)
+
+    @staticmethod
     def get_num_photos(owner):
         # zwraca liczbę zdjęć ownera ze statusem 'r'
         hs = Manager()
@@ -106,4 +131,3 @@ class Photo:
             ret.append(Photo(**dict(r)))
 
         return ret
-

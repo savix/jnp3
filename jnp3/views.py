@@ -15,6 +15,7 @@ def home(request):
         return render(request, 'home.html', {
             'photos': Photo.find_by_owner(request.user.id,
                 limit=Photo.get_num_photos(request.user.id), offset=0)
+            #'photos': Photo.find_by_desc('sushi', 5, 0)[0]
         })
     else:
         return login(request)
