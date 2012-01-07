@@ -16,4 +16,4 @@ def prepare_photo_files(id):
 
     #sleep(20)
     photo = Photo.get(id)
-    photo.update_status(u'r')
+    photo.ready()

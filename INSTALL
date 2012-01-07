@@ -71,11 +71,21 @@ install plugin handlersocket soname 'handlersocket.so';
 create database hstest;
 use hstest;
 create table photos (
-		id int not null auto_increment primary key,
-                owner int,
+		id int not null primary key,
+        owner int,
 		`desc` varchar(1024),
 		status varchar(1)
 		);
+
+create unique index owner_status_id on photos (owner, status, id);
+create table owners (owner int not null primary key, num_photos int not null,
+		zapychacz varchar(1));
+
+# Zabawne, że nigrzyba nie chce mi działać handlersocket bez zapychacza
+# tak jakby nie działał na tabelach z dwoma kolumnami czy coś......
+# insert nie dodaje nic wtedy do tabeli
+# wystarczy dodać kolumnę i już działa WTF?
+
 
 # Przetestowanie:
 show processlist;
