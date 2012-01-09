@@ -165,8 +165,12 @@ HS_DBNAME = 'hstest'
 
 
 
-UNPROCESSED_PHOTOS_DIR = path.join(SETTINGS_DIR, 'unprocessed_photos')
-PROCESSED_PHOTOS_DIR = path.join(SETTINGS_DIR, 'processed_photos')
+UNPROCESSED_PHOTOS_DIR = 'unprocessed_photos'
+PROCESSED_PHOTOS_DIR = 'processed_photos'
 
 SPHINX_INDEX = 'photos_idx'
 SPHINX_PORT = 9312
+
+MOGILEFS_DOMAIN = 'mogile'
+
+MOGILEFS_TRACKERS = ['127.0.0.1:7001']

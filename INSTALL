@@ -154,3 +154,86 @@ indexer
 crontab -e
 # dodać linijkę:
 0 3 * * * /usr/bin/indexer --quiet photos_idx --rotate > /dev/null 2>&1
+
+7. Instalacja MogileFS
+
+# podstawowe pakiety i caly tlum jakis perlowych zaleznosci :(
+echo "deb http://ppa.launchpad.net/awmcclain/ppa/ubuntu jaunty main" >> /etc/apt/sources.list
+apt-get update
+apt-get install mogilefsd mogstored
+apt-get install subversion
+apt-get install libio-aio-perl libbsd-resource-perl libcompress-zlib-perl libnet-netmask-perl libio-stringy-perl libwww-perl
+
+
+# dodajemy baze mysql
+mysql --user=root --password=kartofel
+CREATE DATABASE mogilefs;
+CREATE USER 'mogilefs'@'localhost' IDENTIFIED BY 'mogilefs';
+GRANT ALL ON mogilefs.* TO 'mogilefs'@'localhost';
+FLUSH PRIVILEGES;
+COMMIT;
+
+# generujemy tabele
+mogdbsetup --dbhost=localhost --dbname=mogilefs --dbuser=mogilefs --dbpassword=mogilefs
+
+# trzeba doinstalowac jeszcze dwie rzeczy,
+# nie znalazlem lepszego sposobu niz kompilacja ze zrodel
+
+# instalacja MogileFS-Client (wersja z najwyzszym numerkiem)
+
+cd /usr/src
+svn checkout http://code.sixapart.com/svn/mogilefs/tags/MogileFS-Client-1.12/
+cd MogileFS-Client-1.12/
+perl Makefile.PL
+make
+make install
+
+# instalacja Mogadm (jw.)
+
+cd /usr/src
+svn checkout http://code.sixapart.com/svn/mogilefs/tags/MogileFS-Utils-2.17/
+cd MogileFS-Utils-2.17/
+perl Makefile.PL
+make
+make install
+
+# edytujemy pliki
+# /etc/mogilefs/mogilefsd.conf
+db_user = mogilefs
+db_pass = mogilefs
+listen = 0.0.0.0.:7001
+
+# /etc/mogilefs/mogstored.conf
+docroot = /usr/mogdata
+
+# tworzymy katalogi na dane
+mkdir -p /usr/mogdata/dev1
+mkdir -p /usr/mogdata/dev2
+chown mogstored /usr/mogdata/*
+
+# odpalamy
+service mogilefsd start
+service mogstored restart
+
+# wydajemy jakies tam losowe polecenia
+# to, zeby daemon sie zorientowal, jaki ip i port (tu domyslny)
+# ma ktos, kto trzyma nasze dane
+mogadm --trackers=127.0.0.1:7001 host add local --ip=127.0.0.1 --status=alive
+# po costam kazdy host moze miec wiele zrodel danych, wiec tu je dodajemy
+mogadm --trackers=127.0.0.1:7001 device add local 1
+mogadm --trackers=127.0.0.1:7001 device add local 2
+# i jeszcze tworzymy jakas domene, nie wiem po co ona komu,
+# ale funkcje w pythonie chca, zeby im takowa podac...
+mogadm --trackers=127.0.0.1:7001 domain add mogile
+mogadm --trackers=127.0.0.1:7001 class add mogile mogile --mindevcount=1
+
+# sprawdzamy czy dziala
+mogadm --trackers=127.0.0.1:7001 check
+
+# potrzebujemy jakiejs biblioteki do pythona
+# pymogile ma niepusty README :)
+cd /usr/src
+git clone https://github.com/AloneRoad/pymogile.git
+cd pymogile
+python setup.py build
+python setup.py install
