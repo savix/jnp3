@@ -47,7 +47,7 @@ def register(request):
             # trochę okrutne warto potem scalić te tabele
             hs = Manager()
             hs.insert(settings.HS_DBNAME, 'owners',
-                [('owner', new_user.id), ('num_photos', 0)])
+                [('owner', str(new_user.id)), ('num_photos', '0')])
             return HttpResponseRedirect("/")
     else:
         form = UserCreationForm()
