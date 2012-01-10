@@ -106,7 +106,7 @@ class Photo:
             try:
                 newId = str(randint(1, MAX_INT))
                 hs.insert(settings.HS_DBNAME, 'photos',
-                    [('id', newId), ('owner', str(owner)), ('desc', desc),
+                    [('id', newId), ('owner', str(owner)), ('desc', desc.encode('utf-8')),
                         ('status', 'n')])
                 break
             except OperationalError, e:

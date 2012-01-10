@@ -237,3 +237,9 @@ git clone https://github.com/AloneRoad/pymogile.git
 cd pymogile
 python setup.py build
 python setup.py install
+
+
+
+-1. Na samym końcu
+# Musimy jeszcze wystartować demona do wykonywania asynchronicznych zadań
+python manage.py celeryd -l info

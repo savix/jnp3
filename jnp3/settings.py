@@ -164,7 +164,7 @@ LOGGING = {
 HS_DBNAME = 'hstest'
 
 
-
+MAX_PHOTO_SIZE = 2097152 # 2MB
 UNPROCESSED_PHOTOS_DIR = 'unprocessed_photos'
 PROCESSED_PHOTOS_DIR = 'processed_photos'
 

@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <link href="{{STATIC_URL}}css/style.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
     <div class="container">
     <div class="header">
         <h1><i>myFotka</i></h1>
+        {% if user.is_authenticated %}
+            <p>Witaj, <span class="username">{{user}}</span>! <a href="/logout" class="action logout">Wyloguj się</a></p>
+        {% else %}
+            <p>Witaj, <span class="anonymous">nieznajomy</span>!</p>
+        {% endif %}
     </div>
     <div class="body">
         {% block body %}{% endblock %}

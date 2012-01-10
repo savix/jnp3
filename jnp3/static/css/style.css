@@ -1,0 +1,61 @@
+
+@import url(http://fonts.googleapis.com/css?family=Basic&subset=latin,latin-ext);
+
+body {
+    background: #ad7fa7;
+}
+
+.container {
+    width: 1200px;
+    background: #eeeeec;
+    margin: 0 auto;
+    padding: 10px;
+    border: 2px solid #555753;
+    border-radius: 10px;
+    font-family: 'Basic', sans-serif;
+}
+
+h1 {
+    
+}
+
+.header p {
+    text-align: right;
+    
+}
+
+.body {
+    margin: 0 20px;
+}
+
+.form-fields label {
+    display: inline-block;
+    width: 200px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.form-fields textarea {
+    font-family: 'Basic', sans-serif;
+    width: 600px;
+}
+
+a.action:before, .header .username:before, .header .anonymous:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+  background: url("../img/icons.png");
+}
+a.action.logout:before {
+  background-position: -16px -48px;
+}
+
+.header .username:before {
+  background-position: -16px -16px;
+}
+
+.header .anonymous:before {
+  background-position: -32px 0;
+}

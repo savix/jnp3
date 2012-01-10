@@ -4,7 +4,9 @@
 
 {% block body %}
 
-<p>Jesteś obecnie zalogowany! <a href="/logout">wyloguj się</a></p>
+<p><a href="/search">wyszukaj</a></p>
+
+<h2>Moje zdjęcia</h2>
 
 {% for photo in photos %}
     [tu jest zdjęcie o opisie {{photo.desc}}]
@@ -14,12 +16,18 @@
     <fieldset>
         <legend>Dodawanie nowego zdjęcia.</legend>
         {% csrf_token %}
-        <p><input type="file" name="photo"/></p>
-        <p>Opis: <textarea name="desc"></textarea></p>
-        <p><input type="submit" value="Dodaj zdjęcie!"/></p>
+        <div class="form-fields">
+        <p>
+            <label for="photo-upload-file">Plik</label>
+            <input id="photo-upload-file" type="file" name="photo"/>
+        </p>
+        <p>
+            <label for="photo-upload-desc">Opis</label>
+            <textarea id="photo-upload-desc" name="desc" cols="100" rows="10"></textarea>
+        </p>
+        </div>
+        <p><input type="submit" value="Dodaj zdjęcie!" class="action add-photo"/></p>
     </fieldset>
 </form>
-
-<p><img src="{{STATIC_URL}}kot.jpg"/></p>
 
 {% endblock %}
