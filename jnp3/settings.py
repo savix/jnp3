@@ -129,6 +129,10 @@ INSTALLED_APPS = (
     'jnp3.photos',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'jnp3.users.backends.AuthBackend',
+)
+
 import djcelery
 djcelery.setup_loader()
 
