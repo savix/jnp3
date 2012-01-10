@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import render
 
 from tasks import prepare_photo_files
 from models import Photo
@@ -34,3 +35,15 @@ def upload(request):
         f.close()
         prepare_photo_files.delay(model.id)
         return HttpResponseRedirect('/')
+
+@login_required
+def search(request):
+    query = request.GET.get('q', '').strip()
+    if query:
+        photos, _ = Photo.find_by_desc(query, 30, 0)
+    else:
+        photos = None
+    return render(request, 'search.html', {
+        'query': query,
+        'photos': photos
+    })

@@ -1,0 +1,20 @@
+{% extends "skeleton.html" %}
+
+{% block title %}The current time{% endblock %}
+
+{% block body %}
+
+<h2>Szukanie zdjęć</h2>
+
+<form action="/search" method="GET">
+    <p>
+        <input name="q" value="{{query}}"/>
+        <input type="submit" value="Szukaj"/>
+    </p>
+</form>
+
+{% for photo in photos %}
+<p>{{photo.desc}}</p>
+{% endfor %}
+
+{% endblock %}
