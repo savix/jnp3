@@ -148,7 +148,7 @@ cp ./config/sphinx.conf /etc/sphinxsearch/sphinx.conf
 PIDFILE=/tmp/searchd.pid
 
 # odpalić indexer
-indexer
+indexer photos_idx --rotate
 
 # cron
 crontab -e
