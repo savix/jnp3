@@ -129,6 +129,8 @@ INSTALLED_APPS = (
     'jnp3.photos',
 )
 
+SESSION_ENGINE = 'jnp3.session_backend'
+
 AUTHENTICATION_BACKENDS = (
     'jnp3.users.backends.AuthBackend',
 )
@@ -169,6 +171,9 @@ HS_DBNAME = 'hstest'
 
 
 MAX_PHOTO_SIZE = 2097152 # 2MB
+
+PHOTOS_PER_PAGE = 20
+
 UNPROCESSED_PHOTOS_DIR = 'unprocessed_photos'
 PROCESSED_PHOTOS_DIR = 'processed_photos'
 

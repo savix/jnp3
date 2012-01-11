@@ -13,6 +13,7 @@ body {
     border: 2px solid #555753;
     border-radius: 10px;
     font-family: 'Basic', sans-serif;
+    min-height: 600px;
 }
 
 h1 {
@@ -28,19 +29,51 @@ h1 {
     margin: 0 20px;
 }
 
-.form-fields label {
+.columns:after {
+    content: "";
+    display: block;
+    background: red;
+    clear: both;
+}
+.left-column, .right-column {
+    width: 49%;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* FORMULARZE ************************************************************** */
+
+.form-field label {
     display: inline-block;
     width: 200px;
     text-align: right;
     vertical-align: top;
 }
 
-.form-fields textarea {
+.form-field input {
+    width: 600px;
+}
+
+.form-field textarea {
     font-family: 'Basic', sans-serif;
     width: 600px;
 }
 
-a.action:before, .header .username:before, .header .anonymous:before {
+.form-submit {
+    width: 800px;
+    text-align: center;
+}
+
+form.narrow .form-field input {
+    width: 200px;
+}
+form.narrow .form-submit {
+    width: 400px;
+}
+
+/* IKONY ******************************************************************* */
+
+.with-icon:before {
   content: "";
   display: inline-block;
   vertical-align: middle;
@@ -48,14 +81,20 @@ a.action:before, .header .username:before, .header .anonymous:before {
   height: 16px;
   background: url("../img/icons.png");
 }
-a.action.logout:before {
+
+
+.with-icon.icon-logout:before {
   background-position: -16px -48px;
 }
 
-.header .username:before {
+.with-icon.icon-user:before {
   background-position: -16px -16px;
 }
 
-.header .anonymous:before {
+.with-icon.icon-anonymous:before {
   background-position: -32px 0;
+}
+
+.with-icon.icon-detail:before {
+  background-position: 0  0;
 }

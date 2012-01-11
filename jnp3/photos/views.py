@@ -11,6 +11,7 @@ from django.shortcuts import render
 
 from tasks import prepare_photo_files
 from models import Photo
+from ..users.models import User
 
 from pymogile import Client, MogileFSError
 
@@ -36,7 +37,31 @@ def upload(request):
         prepare_photo_files.delay(model.id)
         return HttpResponseRedirect('/')
 
-@login_required
+def gallery(request, username, page):
+    try:
+        limit = settings.PHOTOS_PER_PAGE
+        offset = (int(page) - 1) * limit
+        owner = User.get_by_username(username)
+        photos = Photo.find_by_owner(owner.id, limit=limit, offset=offset)
+        return render(request, 'gallery.html', {
+            'owner': owner,
+            'photos': photos
+        })
+    except User.DoesNotExist:
+        return HttpResponseRedirect('/')
+
+
+def photo(request, id):
+    try:
+        photo = Photo.get(id)
+        owner = User.get(photo.owner)
+        return render(request, 'photo.html', {
+            'owner': owner,
+            'photo': photo
+        })
+    except Photo.DoesNotExist, User.DoesNotExist:
+        return HttpResponseRedirect('/')
+
 def search(request):
     query = request.GET.get('q', '').strip()
     if query:

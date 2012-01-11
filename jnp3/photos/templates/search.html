@@ -1,10 +1,10 @@
 {% extends "skeleton.html" %}
 
-{% block title %}The current time{% endblock %}
+{% block title %}Szukanie zdjęć - myFotka{% endblock %}
 
 {% block body %}
 
-<h2>Szukanie zdjęć</h2>
+<h2>Szukaj zdjęcia</h2>
 
 <form action="/search" method="GET">
     <p>
@@ -14,7 +14,7 @@
 </form>
 
 {% for photo in photos %}
-<p>{{photo.desc}}</p>
+<p><a href="/photo/{{photo.id}}">{{photo.desc}}</a></p>
 {% endfor %}
 
 {% endblock %}

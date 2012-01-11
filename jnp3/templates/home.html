@@ -1,10 +1,14 @@
 {% extends "skeleton.html" %}
 
-{% block title %}The current time{% endblock %}
+{% block title %}Strona główna myFotka{% endblock %}
 
 {% block body %}
 
-<p><a href="/search">wyszukaj</a></p>
+<h2>Co chcesz zrobić?</h2>
+
+<ul>
+    <li><a href="/search">Przeszukaj bazę zdjęć</a></li>
+</ul>
 
 <h2>Moje zdjęcia</h2>
 
@@ -12,22 +16,23 @@
     [tu jest zdjęcie o opisie {{photo.desc}}]
 {% endfor %}
 
+<p><a href="/gallery/{{user.username}}/1">Więcej zdjęć</a></p>
+
+<h2>Dodaj nowe zdjęcie</h2>
+
 <form action="/upload" method="POST" enctype="multipart/form-data">
-    <fieldset>
-        <legend>Dodawanie nowego zdjęcia.</legend>
-        {% csrf_token %}
-        <div class="form-fields">
-        <p>
-            <label for="photo-upload-file">Plik</label>
-            <input id="photo-upload-file" type="file" name="photo"/>
-        </p>
-        <p>
-            <label for="photo-upload-desc">Opis</label>
-            <textarea id="photo-upload-desc" name="desc" cols="100" rows="10"></textarea>
-        </p>
-        </div>
-        <p><input type="submit" value="Dodaj zdjęcie!" class="action add-photo"/></p>
-    </fieldset>
+    {% csrf_token %}
+    <p class="form-field">
+        <label for="photo-upload-file">Plik</label>
+        <input id="photo-upload-file" type="file" name="photo"/>
+    </p>
+    <p class="form-field">
+        <label for="photo-upload-desc">Opis</label>
+        <textarea id="photo-upload-desc" name="desc" cols="100" rows="10"></textarea>
+    </p>
+    <p class="form-submit">
+        <input type="submit" value="Dodaj zdjęcie!" class="action add-photo"/>
+    </p>
 </form>
 
 {% endblock %}

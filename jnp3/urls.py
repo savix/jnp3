@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     (r'^register$', 'jnp3.views.register'),
     (r'^upload$', 'jnp3.photos.views.upload'),
     (r'^search$', 'jnp3.photos.views.search'),
+    (r'^gallery/(?P<username>\w+)/(?P<page>1\d*)$', 'jnp3.photos.views.gallery'),
+    (r'^photo/(?P<id>\d+)$', 'jnp3.photos.views.photo'),
     # Examples:
     # url(r'^$', 'jnp3.views.home', name='home'),
     # url(r'^jnp3/', include('jnp3.foo.urls')),

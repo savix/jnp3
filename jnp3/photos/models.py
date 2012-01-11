@@ -2,6 +2,7 @@
 
 from random import randint
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from pyhs import Manager
 from pyhs.exceptions import OperationalError
@@ -42,9 +43,12 @@ class Photo:
 
         dat = dict(hs.get(settings.HS_DBNAME, 'photos',
                 ['id', 'owner', 'desc', 'status'], str(id)))
-
-        return Photo(int(dat['id']), int(dat['owner']), dat['desc'],
-                dat['status'])
+        
+        if dat:
+            return Photo(int(dat['id']), int(dat['owner']), dat['desc'].decode('utf-8'),
+                    dat['status'])
+        else:
+            raise Photo.DoesNotExist()
 
     @staticmethod
     def find_by_owner(owner, limit, offset):
@@ -131,3 +135,6 @@ class Photo:
             ret.append(Photo(**dict(r)))
 
         return ret
+    
+    class DoesNotExist(ObjectDoesNotExist):
+        pass

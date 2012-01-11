@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link href="{{STATIC_URL}}css/style.css" type="text/css" rel="stylesheet"/>
+    <link href="{{STATIC_URL}}css/style.css?a" type="text/css" rel="stylesheet"/>
 </head>
 <body>
     <div class="container">
     <div class="header">
-        <h1><i>myFotka</i></h1>
+        <h1><a href="/"><i>myFotka</i></a></h1>
         {% if user.is_authenticated %}
-            <p>Witaj, <span class="username">{{user}}</span>! <a href="/logout" class="action logout">Wyloguj się</a></p>
+            <p>Witaj, <span class="with-icon icon-user">{{user}}</span>! <a href="/logout" class="with-icon icon-logout">Wyloguj się</a></p>
         {% else %}
-            <p>Witaj, <span class="anonymous">nieznajomy</span>!</p>
+            <p>Witaj, <span class="with-icon icon-anonymous">nieznajomy</span>!</p>
         {% endif %}
     </div>
     <div class="body">

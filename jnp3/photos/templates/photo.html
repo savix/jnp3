@@ -1,0 +1,13 @@
+{% extends "skeleton.html" %}
+
+{% block title %}Szczegóły zdjęcia{% endblock %}
+
+{% block body %}
+
+<h2>Szczegóły zdjęcia</h2>
+
+<p>{{photo.desc}}</p>
+
+<p>Zobacz więcej zdjęć użytkownika <a class="with-icon icon-user" href="/gallery/{{owner.username}}/1">{{owner}}</a></p>
+
+{% endblock %}

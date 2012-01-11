@@ -70,16 +70,33 @@ install plugin handlersocket soname 'handlersocket.so';
 
 create database hstest;
 use hstest;
-create table photos (
-		id int not null primary key,
-        owner int,
-		`desc` varchar(1024),
-		status varchar(1)
-		);
+
+CREATE TABLE `sessions` (
+    `session_key` varchar(40) NOT NULL PRIMARY KEY,
+    `session_data` text NOT NULL,
+    `expire_date` datetime NOT NULL
+);
+
+create table `photos` (
+    `id` int not null primary key,
+    owner int,
+    `desc` varchar(1024),
+    status varchar(1)
+);
 
 create unique index owner_status_id on photos (owner, status, id);
-create table owners (owner int not null primary key, num_photos int not null,
-		zapychacz varchar(1));
+
+
+--create table `users` (
+--    `id`          int          not null primary key,
+--    `username`    varchar(255) not null,
+--    `password`    varchar(255) not null,
+--    `photo_count` int          not null,
+--);
+
+--create unique index `users_by_username` on `users` (
+--    `username`, `id`, `password`, `photo_count`);
+
 
 # Zabawne, że nigrzyba nie chce mi działać handlersocket bez zapychacza
 # tak jakby nie działał na tabelach z dwoma kolumnami czy coś......
