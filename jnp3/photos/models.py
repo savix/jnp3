@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from pyhs import Manager
 
-import hsdb
+import jnp3.hsdb as hsdb
 
 from sphinxsearch import SphinxClient
 

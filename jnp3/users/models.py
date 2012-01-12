@@ -4,7 +4,7 @@ from django.contrib.auth.models import check_password, get_hexdigest
 from django.db import models, IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 
-import hsdb
+import jnp3.hsdb as hsdb
 
 def hash_password(raw_password):
     import random
