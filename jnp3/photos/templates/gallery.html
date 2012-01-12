@@ -8,8 +8,16 @@
 
 {% for photo in photos %}
     {% include "thumbnail.html" %}
-{% empty %}
-<p>Ten użytkownik nie ma żadnych zdjęć.</p>
 {% endfor %}
+
+<p>
+    {% for page in page_range %}
+        {% if page == current_page %}
+            [Strona {{page}}]
+        {% else %}
+            [<a href="{{page}}">Strona {{page}}</a>]
+        {% endif %}
+    {% endfor %}
+</p>
 
 {% endblock %}

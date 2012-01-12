@@ -39,13 +39,16 @@ def upload(request):
 
 def gallery(request, owner, page):
     try:
+        page = int(page)
         limit = settings.PHOTOS_PER_PAGE
-        offset = (int(page) - 1) * limit
+        offset = (page - 1) * limit
         owner = User.get(owner)
         photos = Photo.find_by_owner(owner.id, limit=limit, offset=offset)
         return render(request, 'gallery.html', {
             'owner': owner,
-            'photos': photos
+            'photos': photos,
+            'current_page': page,
+            'page_range': xrange(1, max(2, (owner.ready_photo_count + limit - 1) // limit + 1))
         })
     except User.DoesNotExist:
         return HttpResponseRedirect('/')

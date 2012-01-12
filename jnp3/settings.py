@@ -174,7 +174,7 @@ HS_DBNAME = 'hstest'
 
 MAX_PHOTO_SIZE = 2097152 # 2MB
 
-PHOTOS_PER_PAGE = 20
+PHOTOS_PER_PAGE = 2
 
 UNPROCESSED_PHOTOS_DIR = 'unprocessed_photos'
 PROCESSED_PHOTOS_DIR = 'processed_photos'
