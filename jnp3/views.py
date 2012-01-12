@@ -14,7 +14,7 @@ def home(request):
     if request.user.is_authenticated():
         return render(request, 'home.html', {
             'photos': Photo.find_by_owner(request.user.id,
-                limit=Photo.get_num_photos(request.user.id), offset=0)
+                limit=10, offset=0)
             #'photos': Photo.find_by_desc('sushi', 5, 0)[0]
         })
     else:
@@ -39,6 +39,7 @@ def logout(request):
     return HttpResponseRedirect('/')
 
 def register(request):
+    return
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():

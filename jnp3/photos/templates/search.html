@@ -14,6 +14,8 @@
 </form>
 
 {% for photo in photos %}
+{% include "thumbnail.html" %}
+
 <p><a href="/photo/{{photo.id}}">{{photo.desc}}</a></p>
 {% endfor %}
 

@@ -5,68 +5,39 @@ from random import randint
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from pyhs import Manager
-from pyhs.exceptions import OperationalError
+
+import hsdb
 
 from sphinxsearch import SphinxClient
 
-MAX_INT = 2147483647
-NUM_TRIES = 20
 
 class Photo:
-#    STATUS_CHOICES = (
-#        ('n', 'new'),
-#        ('r', 'ready'),
-#    )
-
-    def __init__(self, id, owner, desc, status):
-        self.id = id
-        self.owner = owner
+    def __init__(self, owner, nb, status, desc):
+        self.owner = int(owner)
+        self.nb = int(nb)
         self.desc = desc
         self.status = status
-
+    
     def ready(self):
-        hs = Manager()
-
-        hs.update(settings.HS_DBNAME, 'photos',
-                '=', ['id', 'status'], [str(self.id)],
-                [str(self.id), 'r'])
-
-        # zakładam, że nie mamy usuwania zdjęć
-        hs.incr(settings.HS_DBNAME, 'owners',
-                '=', ['owner', 'num_photos'], [str(self.owner)], ['0', '1'])
-
+        hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, self.nb), (self.owner, self.nb, 'r'))
+        # To powinno działać - jak nie to się przepisze
+        hsdb.incr('users', ('ready_photos', ), '=', (self.owner, ))
         self.status = 'r'
 
     @staticmethod
-    def get(id):
-        hs = Manager()
-
-        dat = dict(hs.get(settings.HS_DBNAME, 'photos',
-                ['id', 'owner', 'desc', 'status'], str(id)))
-        
-        if dat:
-            return Photo(int(dat['id']), int(dat['owner']), dat['desc'].decode('utf-8'),
-                    dat['status'])
+    def get(owner, nb):
+        rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, nb), limit=1)
+        if rows:
+            row = rows[0]
+            return Photo(row['owner'], row['nb'], row['status'], row['desc'])
         else:
             raise Photo.DoesNotExist()
 
     @staticmethod
     def find_by_owner(owner, limit, offset):
-        # zamieniłem na limit i offset, żeby uniknąć problemów
-        # szuka tylko w gotowych zdjęciach
-        hs = Manager()
-
-        dat = hs.find(settings.HS_DBNAME, 'photos',
-                '=', ['owner', 'status', 'id', 'desc'],
-                [str(owner), 'r'],
-                'owner_status_id', str(limit), str(offset))
-
-        ret = []
-
-        for r in dat:
-            ret.append(Photo(**dict(r)))
-
-        return ret
+        rows = hsdb.find('photos', ('owner', 'status', 'nb', 'desc'), '=', (owner, 'r'),
+            index_name='photos_by_owner_status', limit=limit, offset=offset)
+        return [Photo(**row) for row in rows]
 
     @staticmethod
     def find_by_desc(query, limit, offset, owners=None):
@@ -80,11 +51,10 @@ class Photo:
             sc.SetFilter('owner', owners)
 
         ans = sc.Query(query, settings.SPHINX_INDEX)
-
         ret = []
 
         for r in ans['matches']:
-            ret.append(Photo.get(r['id']))
+            ret.append(Photo.get(r['attrs']['owner'], r['attrs']['nb']))
 
         # liczba wszystkich zmatchowanych
         totalFound = ans['total_found']
@@ -92,49 +62,10 @@ class Photo:
         return (ret, totalFound)
 
     @staticmethod
-    def get_num_photos(owner):
-        # zwraca liczbę zdjęć ownera ze statusem 'r'
-        hs = Manager()
-
-        dat = dict(hs.get(settings.HS_DBNAME, 'owners',
-                ['owner', 'num_photos'], str(owner)))
-
-        return dat['num_photos']
-
-    @staticmethod
     def create(owner, desc):
-        hs = Manager()
+        nb = hsdb.incr('users', ('all_photos', ), '=', (owner, ), return_original=True)[0]['all_photos']
+        hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, nb, 'n', desc))
+        return Photo(owner, nb, 'n', desc)
 
-        # Trochę kiepskie, ale na początek może starczy
-        for i in range(NUM_TRIES):
-            try:
-                newId = str(randint(1, MAX_INT))
-                hs.insert(settings.HS_DBNAME, 'photos',
-                    [('id', newId), ('owner', str(owner)), ('desc', desc.encode('utf-8')),
-                        ('status', 'n')])
-                break
-            except OperationalError, e:
-                print e
-                continue
-        else:
-            raise Exception("Failed to create Photo!")
-
-        return Photo(newId, owner, desc, 'n')
-
-    # Wyłącznie do testowania, potem usunąć
-    @staticmethod
-    def all():
-        hs = Manager()
-
-        dat = hs.find(settings.HS_DBNAME, 'photos',
-                '>=', ['id', 'owner', 'desc', 'status'], ['1'], None, MAX_INT)
-
-        ret = []
-
-        for r in dat:
-            ret.append(Photo(**dict(r)))
-
-        return ret
-    
     class DoesNotExist(ObjectDoesNotExist):
         pass

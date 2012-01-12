@@ -7,7 +7,7 @@
 <h2>Zdjęcia użytkownika {{owner}}</h2>
 
 {% for photo in photos %}
-<p>{{photo.desc}} <a class="with-icon icon-detail" href="/photo/{{photo.id}}">Szczegóły</a></p>
+    {% include "thumbnail.html" %}
 {% empty %}
 <p>Ten użytkownik nie ma żadnych zdjęć.</p>
 {% endfor %}

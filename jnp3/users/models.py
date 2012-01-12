@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.auth.models import check_password, get_hexdigest
-from django.db import models
+from django.db import models, IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 
-# Create your models here.
-
-users = (
-    (1, 'user1', 'user1'),
-    (2, 'user2', 'user2'),
-)
+import hsdb
 
 def hash_password(raw_password):
     import random
@@ -20,10 +15,11 @@ def hash_password(raw_password):
 
 class User(object):
     
-    def __init__(self, id, username, password):
-        self.id = id
+    def __init__(self, id, username, password, ready_photo_count):
+        self.id = int(id)
         self.username = username
         self.password = password
+        self.ready_photo_count = int(ready_photo_count)
     
     @property
     def is_staff(self):
@@ -72,21 +68,32 @@ class User(object):
     
     @staticmethod
     def get(id):
-        for current_id, current_username, current_raw_password in users:
-            if current_id == id:
-                return User(current_id, current_username, hash_password(current_raw_password))
-        raise User.DoesNotExist()
+        row = hsdb.get('users', ('id', 'username', 'password', 'ready_photos'), id)
+        if row:
+            return User(row['id'], row['username'], row['password'], row['ready_photos'])
+        else:
+            raise User.DoesNotExist()
     
     @staticmethod
     def create(username, password):
-        raise NotImplementedError()
+        password = hash_password(password)
+        try:
+            hsdb.insert('users', ('id', 'username', 'password', 'ready_photos', 'all_photos'),
+                ('', username, password, 0, 0))
+        except hsdb.OperationalError:
+            raise IntegrityError()
+        else:
+            row = hsdb.get('users', ('username', 'id'), username, index_name='users_by_username')
+            return User(row['id'], username, password, 0)
     
     @staticmethod
     def get_by_username(username):
-        for current_id, current_username, current_raw_password in users:
-            if current_username == username:
-                return User(current_id, current_username, hash_password(current_raw_password))
-        raise User.DoesNotExist()
+        row = hsdb.get('users', ('username', 'id', 'password', 'ready_photos'), username,
+            index_name='users_by_username')
+        if row:
+            return User(row['id'], row['username'], row['password'], row['ready_photos'])
+        else:
+            raise User.DoesNotExist()
     
     class DoesNotExist(ObjectDoesNotExist):
         pass

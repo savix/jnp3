@@ -78,24 +78,29 @@ CREATE TABLE `sessions` (
 );
 
 create table `photos` (
-    `id` int not null primary key,
-    owner int,
+    `owner` int,
+    `nb` int,
+    `status` varchar(1),
     `desc` varchar(1024),
-    status varchar(1)
+    `id` int not null AUTO_INCREMENT,
+    primary key (`owner`, `nb`),
+    unique (id)
 );
 
-create unique index owner_status_id on photos (owner, status, id);
+create unique index photos_by_owner_status on photos (owner, status);
 
+create table `users` (
+    `id`           int          not null primary key auto_increment,
+    `username`     varchar(255) not null,
+    `password`     varchar(255) not null,
+    `ready_photos` int          not null,
+    `all_photos`   int          not null
+);
 
---create table `users` (
---    `id`          int          not null primary key,
---    `username`    varchar(255) not null,
---    `password`    varchar(255) not null,
---    `photo_count` int          not null,
---);
-
---create unique index `users_by_username` on `users` (
---    `username`, `id`, `password`, `photo_count`);
+-- Jakoś nie trzeba dawać dodatkowych pól - HandlerSocket pozwala pobrać wartości
+-- z kolumn, które nie występują w indeksie, mimo że dokumentacja mówi coś innego
+create unique index `users_by_username` on `users` (
+    `username`);
 
 
 # Zabawne, że nigrzyba nie chce mi działać handlersocket bez zapychacza

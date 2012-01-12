@@ -13,10 +13,10 @@
 <h2>Moje zdjęcia</h2>
 
 {% for photo in photos %}
-    [tu jest zdjęcie o opisie {{photo.desc}}]
+    {% include "thumbnail.html" %}
 {% endfor %}
 
-<p><a href="/gallery/{{user.username}}/1">Więcej zdjęć</a></p>
+<p><a href="/gallery/{{user.id}}/1">Więcej zdjęć</a></p>
 
 <h2>Dodaj nowe zdjęcie</h2>
 

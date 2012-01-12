@@ -6,8 +6,10 @@
 
 <h2>Szczegóły zdjęcia</h2>
 
+<p><img src="/photo_files/{{photo.owner}},{{photo.nb}}.jpg"/></p>
+
 <p>{{photo.desc}}</p>
 
-<p>Zobacz więcej zdjęć użytkownika <a class="with-icon icon-user" href="/gallery/{{owner.username}}/1">{{owner}}</a></p>
+<p>Zobacz więcej zdjęć użytkownika <a class="with-icon icon-user" href="/gallery/{{owner.id}}/1">{{owner}}</a></p>
 
 {% endblock %}
