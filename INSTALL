@@ -170,7 +170,7 @@ cp ./config/sphinx.conf /etc/sphinxsearch/sphinx.conf
 PIDFILE=/tmp/searchd.pid
 
 # odpalić indexer
-indexer
+indexer photos_idx --rotate
 
 # cron
 crontab -e
@@ -260,6 +260,12 @@ cd pymogile
 python setup.py build
 python setup.py install
 
+# kasowanie wszystkich plikow
+# na razie nie znalazlem jakiejs firmowej metody
+# wiec robimy brutalnie:
+
+rm -rf /usr/mogdata/dev1/* /usr/mogdata/dev2/*
+service mogstored restart
 
 
 -1. Na samym końcu
