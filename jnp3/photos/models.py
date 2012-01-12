@@ -54,7 +54,11 @@ class Photo:
         ret = []
 
         for r in ans['matches']:
-            ret.append(Photo.get(r['attrs']['owner'], r['attrs']['nb']))
+            try:
+                ret.append(Photo.get(r['attrs']['owner'], r['attrs']['nb']))
+            except Photo.DoesNotExist:
+                # Nie martwimy się tym
+                pass
 
         # liczba wszystkich zmatchowanych
         totalFound = ans['total_found']

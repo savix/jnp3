@@ -41,6 +41,13 @@ h1 {
     display: inline-block;
 }
 
+.thumbnail {
+    display: inline-block;
+    background: white;
+    
+    border: 1px solid black;
+}
+
 /* FORMULARZE ************************************************************** */
 
 .form-field label {

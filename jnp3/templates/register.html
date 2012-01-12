@@ -3,12 +3,35 @@
 {% block title %}Utwórz konto{% endblock %}
 
 {% block body %}
-  <h2>Tworzenie konta</h2>
+<h2>Tworzenie konta</h2>
 
-  <form action="" method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Create the account">
-  </form>
+{% if error == 'invalid_username' %}
+<p class="error">Nazwa użytkownika musi mieć co najmniej pięć znaków i składać się z a-zA-Z0-9_</p>
+{% else %}{% if error == 'invalid_password' %}
+<p class="error">Hasło musi mieć co najmniej pięć znaków</p>
+{% else %}{% if error == 'password_mismatch' %}
+<p class="error">Hasła nie zgadzają się</p>
+{% else %}{% if error == 'username_taken' %}
+<p class="error">Nazwa użytkownika jest już zajęta</p>
+{% endif %}{% endif %}{% endif %}{% endif %}
+
+<form action="" method="post" class="narrow">
+    {% csrf_token %}
+    <p class="form-field">
+        <label for="register-username">Nazwa użytkownika</label>
+        <input id="register-username" name="username" value="{{username}}"/>
+    </p>
+    <p class="form-field">
+        <label for="register-password">Hasło</label>
+        <input id="register-password" name="password" type="password"/>
+    </p>
+    <p class="form-field">
+        <label for="register-password2">Powtórz hasło</label>
+        <input id="register-password2" name="password2" type="password"/>
+    </p>
+    <p class="form-submit">
+        <input type="submit" value="Zarejestruj się"/>
+    </p>
+</form>
 {% endblock %}
 

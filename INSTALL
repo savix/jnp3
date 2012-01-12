@@ -87,7 +87,7 @@ create table `photos` (
     unique (id)
 );
 
-create unique index photos_by_owner_status on photos (owner, status);
+create index photos_by_owner_status on photos (owner, status);
 
 create table `users` (
     `id`           int          not null primary key auto_increment,

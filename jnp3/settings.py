@@ -105,6 +105,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+LOGIN_URL = '/'
+
 ROOT_URLCONF = 'jnp3.urls'
 
 TEMPLATE_DIRS = (

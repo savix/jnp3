@@ -1,5 +1,6 @@
 
 <div class="thumbnail">
-<img src="/photo_files/{{photo.owner}},{{photo.nb}}-160x160.jpg"/>
-<a href="/photo/{{photo.owner}},{{photo.nb}}">{{photo.desc}}</a>
+<p><img src="/photo_files/{{photo.owner}},{{photo.nb}}-160x160.jpg"/></p>
+<p>{% if photo.desc %}{{photo.desc}}{% else %}<i>brak opisu</i>{% endif %}</p>
+<p><a href="/photo/{{photo.owner}},{{photo.nb}}" class="with-icon icon-detail">Szczegóły</a></p>
 </div>
