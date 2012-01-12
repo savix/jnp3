@@ -8,12 +8,17 @@ from django.shortcuts import render_to_response
 from django.conf import settings
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.encoding import smart_unicode
 
 from tasks import prepare_photo_files
 from models import Photo
 from ..users.models import User
 
 from pymogile import Client, MogileFSError
+
+import json
+
+import re, string
 
 @login_required
 def upload(request):
@@ -93,7 +98,32 @@ def search(request):
         photos, _ = Photo.find_by_desc(query, 30, 0)
     else:
         photos = None
+
     return render(request, 'search.html', {
         'query': query,
         'photos': photos
     })
+
+
+def api_search(request):
+    query = request.GET.get('q', '').strip()
+    # uodpornienie na "sphinx injection" - pozwala tylko na proste query
+    query = re.sub('[{0}]'.format(string.punctuation), '', query)
+
+    limit = min(settings.MAX_LIMIT,
+            int(request.GET.get('l', settings.MAX_LIMIT).strip()))
+    offset = int(request.GET.get('o', 0).strip())
+
+    if limit <= 0 or offset < 0:
+        ret = json.dumps({'error' : 'Incorrect limit or offset'})
+    else:
+        if query:
+            photos, totalFound = Photo.find_by_desc(query, limit, offset)
+        else:
+            photos = None
+
+        ret = {'totalFound' : totalFound, 'query' : query,
+        'limit' : limit, 'offset' : offset,
+        'photos' : [p.__dict__ for p in photos]}
+
+    return HttpResponse(json.dumps(ret, ensure_ascii=False))
