@@ -111,19 +111,25 @@ def api_search(request):
     query = re.sub('[{0}]'.format(string.punctuation), '', query)
 
     limit = min(settings.MAX_LIMIT,
-            int(request.GET.get('l', settings.MAX_LIMIT).strip()))
-    offset = int(request.GET.get('o', 0).strip())
+            int(request.GET.get('l', settings.MAX_LIMIT)))
+    offset = int(request.GET.get('o', 0))
 
     if limit <= 0 or offset < 0:
         ret = json.dumps({'error' : 'Incorrect limit or offset'})
     else:
         if query:
             photos, totalFound = Photo.find_by_desc(query, limit, offset)
+            ret = {
+                'totalFound' : totalFound,
+                'query' : query,
+                'limit' : limit,
+                'offset' : offset,
+                'photos' : [{
+                    'thumbnailFile': '/photo_files/%s,%s-160x160.jpg' % (p.owner, p.nb),
+                    'photoPage': '/photo/%s,%s' % (p.owner, p.nb),
+                    'description': p.desc,
+                    } for p in photos]}
         else:
-            photos = None
+            ret = {'error' : 'Empty query'}
 
-        ret = {'totalFound' : totalFound, 'query' : query,
-        'limit' : limit, 'offset' : offset,
-        'photos' : [p.__dict__ for p in photos]}
-
-    return HttpResponse(json.dumps(ret, ensure_ascii=False))
+    return HttpResponse(json.dumps(ret, ensure_ascii=False), content_type='application/json')

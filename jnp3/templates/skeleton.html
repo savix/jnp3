@@ -3,6 +3,7 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <link href="{{STATIC_URL}}css/style.css?a" type="text/css" rel="stylesheet"/>
+    {% block scripts %}{% endblock %}
 </head>
 <body>
     <div class="container">

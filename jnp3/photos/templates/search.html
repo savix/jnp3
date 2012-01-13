@@ -2,16 +2,23 @@
 
 {% block title %}Szukanie zdjęć - myFotka{% endblock %}
 
+{% block scripts %}
+<script src="{{STATIC_URL}}js/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/search.js" type="text/javascript"></script>
+{% endblock %}
+
 {% block body %}
 
 <h2>Szukaj zdjęcia</h2>
 
-<form action="/search" method="GET">
+<form action="/search" method="GET" id="search-form">
     <p>
-        <input name="q" value="{{query}}"/>
+        <input id="search-query" name="q" value="{{query}}"/>
         <input type="submit" value="Szukaj"/>
     </p>
 </form>
+
+<div id="results"></div>
 
 {% for photo in photos %}
 {% include "thumbnail.html" %}
