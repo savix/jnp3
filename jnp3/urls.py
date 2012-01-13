@@ -15,8 +15,10 @@ urlpatterns = patterns('',
     (r'^search$', 'jnp3.photos.views.search'),
     (r'^gallery/(?P<owner>\d+)/(?P<page>[1-9]\d*)$', 'jnp3.photos.views.gallery'),
     (r'^photo/(?P<owner>\d+),(?P<nb>\d+)$', 'jnp3.photos.views.photo'),
-    (r'^photo_files/(?P<owner>\d+),(?P<nb>\d+).jpg$', 'jnp3.photos.views.photo_file'),
-    (r'^photo_files/(?P<owner>\d+),(?P<nb>\d+)-160x160.jpg$', 'jnp3.photos.views.photo_thumbnail'),
+    # Uncomment to serve photos with django
+    # You need also to modify /etc/varnish/default.vcl
+    #(r'^photos/(?P<owner>\d+),(?P<nb>\d+).jpg$', 'jnp3.photos.views.photo_file'),
+    #(r'^thumbnails/(?P<owner>\d+),(?P<nb>\d+)-160x160.jpg$', 'jnp3.photos.views.photo_thumbnail'),
     (r'^api/search$', 'jnp3.photos.views.api_search'),
     # Examples:
     # url(r'^$', 'jnp3.views.home', name='home'),

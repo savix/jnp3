@@ -6,36 +6,34 @@
 #
 
 # application logic
-backend server1 {
+backend logic1 {
     .host = "127.0.0.1";
     .port = "8080";
 }
 
-backend server2 {
+backend logic2 {
     .host = "127.0.0.1";
     .port = "8080";
 }
 
 # static content
-backend server3 {
+backend static {
     .host = "127.0.0.1";
     .port = "8080";
+}
+
+backend photos {
+	  .host = "127.0.0.1";
+		.port = "8079";
 }
 
 # groups of equivalent servers replicated for performance and roboustness
 director default round-robin {
     {
-        .backend = server1;
+        .backend = logic1;
     }
     {
-        .backend = server2;
-    }
-    # etc...
-}
-
-director static round-robin {
-    {
-        .backend = server3;
+        .backend = logic2;
     }
 }
 
@@ -46,15 +44,25 @@ director static round-robin {
 
 # Behaviour after receiving new request
 sub vcl_recv {
-    #req.backend = logic;
+    # content-related load balancing
+    if (req.url ~ "^/static/") {
+        set req.backend = static;
+		return (lookup);
+    }
+    # Comment this out, if you want to serve photos with django
+    if (req.url ~ "^/photos/" || req.url ~ "^/thumbnails/") {
+        set req.backend = photos;
+		return (lookup);
+    }
+    # ...
 
     if (req.restarts == 0) {
-	if (req.http.x-forwarded-for) {
-	    set req.http.X-Forwarded-For =
-		req.http.X-Forwarded-For + ", " + client.ip;
-	} else {
-	    set req.http.X-Forwarded-For = client.ip;
-	}
+        if (req.http.x-forwarded-for) {
+            set req.http.X-Forwarded-For =
+                req.http.X-Forwarded-For + ", " + client.ip;
+        } else {
+            set req.http.X-Forwarded-For = client.ip;
+        }
     }
     if (req.request != "GET" &&
 		req.request != "HEAD" &&
@@ -74,12 +82,6 @@ sub vcl_recv {
         /* Not cacheable by default */
         return (pass);
     }
-
-    # content-related load balancing
-    if (req.url ~ "^/static/") {
-        set req.backend = static;
-    }
-    # ...
 
     return (lookup);
 }

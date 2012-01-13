@@ -125,7 +125,7 @@ def api_search(request):
                 'limit' : limit,
                 'offset' : offset,
                 'photos' : [{
-                    'thumbnailFile': '/photo_files/%s,%s-160x160.jpg' % (p.owner, p.nb),
+                    'thumbnailFile': '/thumbnails/%s,%s-160x160.jpg' % (p.owner, p.nb),
                     'photoPage': '/photo/%s,%s' % (p.owner, p.nb),
                     'description': p.desc,
                     } for p in photos]}

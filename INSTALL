@@ -265,8 +265,41 @@ python setup.py install
 # wiec robimy brutalnie:
 
 rm -rf /usr/mogdata/dev1/* /usr/mogdata/dev2/*
+# w mysql:
+use mogilefs;
+delete from file;
+
 service mogstored restart
 
+# serwowanie obrazkow bez posrednictwa django (perlbal)
+# instalujemy perlbal'a:
+cpan Perlbal
+cpan inc::Module::Install
+cpan Test::Base
+
+# i plugin do mogile'a
+cd /usr/src
+git clone https://github.com/victori/perlbal-plugin-mogilefs.git
+cd perlbal-plugin-mogilefs
+
+# zmieniamy w /usr/src/perlbal-plugin-mogilefs/lib/Perlbal/Plugin/MogileFS.pm
+# kod funkcji url_to_key:
+sub url_to_key {
+    my $uri = shift;
+    # don't copy url past ?foo
+    my ($core_uri) = $uri =~ /(.*?)(?:\?|$)/;
+
+    return substr($core_uri,1);
+}
+
+perl Makefile.PL
+make
+make install
+mkdir /etc/perlbal
+cp /home/jnp/repo/config/perlbal.conf /etc/perlbal/
+
+# odpalenie
+perlbal -d
 
 -1. Na samym końcu
 # Musimy jeszcze wystartować demona do wykonywania asynchronicznych zadań

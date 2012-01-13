@@ -17,12 +17,12 @@ body {
 }
 
 h1 {
-    
+
 }
 
 .header p {
     text-align: right;
-    
+
 }
 
 .body {
@@ -44,7 +44,7 @@ h1 {
 .thumbnail {
     display: inline-block;
     background: white;
-    
+
     border: 1px solid black;
 }
 
@@ -81,27 +81,27 @@ form.narrow .form-submit {
 /* IKONY ******************************************************************* */
 
 .with-icon:before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  width: 16px;
-  height: 16px;
-  background: url("../img/icons.png");
+	content: "";
+	display: inline-block;
+	vertical-align: middle;
+	width: 16px;
+	height: 16px;
+	background: url("../img/icons.png");
 }
 
 
 .with-icon.icon-logout:before {
-  background-position: -16px -48px;
+	background-position: -16px -48px;
 }
 
 .with-icon.icon-user:before {
-  background-position: -16px -16px;
+	background-position: -16px -16px;
 }
 
 .with-icon.icon-anonymous:before {
-  background-position: -32px 0;
+	background-position: -32px 0;
 }
 
 .with-icon.icon-detail:before {
-  background-position: 0  0;
+	background-position: 0  0;
 }
