@@ -6,9 +6,11 @@
 
 <h2>Zdjęcia użytkownika {{owner}}</h2>
 
+<div class="thumbnails">
 {% for photo in photos %}
     {% include "thumbnail.html" %}
 {% endfor %}
+</div>
 
 <p>
     {% for page in page_range %}

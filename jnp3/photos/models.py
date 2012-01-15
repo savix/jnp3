@@ -14,19 +14,19 @@ from sphinxsearch import SphinxClient
 class Photo:
     def __init__(self, owner, nb, status, desc):
         self.owner = int(owner)
-        self.nb = int(nb)
+        self.nb = abs(int(nb))
         self.desc = desc
         self.status = status
     
     def ready(self):
-        hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, self.nb), (self.owner, self.nb, 'r'))
+        hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, -self.nb), (self.owner, -self.nb, 'r'))
         # To powinno działać - jak nie to się przepisze
         hsdb.incr('users', ('ready_photos', ), '=', (self.owner, ))
         self.status = 'r'
 
     @staticmethod
     def get(owner, nb):
-        rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, nb), limit=1)
+        rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, -abs(int(nb))), limit=1)
         if rows:
             row = rows[0]
             return Photo(row['owner'], row['nb'], row['status'], row['desc'])
@@ -36,7 +36,7 @@ class Photo:
     @staticmethod
     def find_by_owner(owner, limit, offset):
         rows = hsdb.find('photos', ('owner', 'status', 'nb', 'desc'), '=', (owner, 'r'),
-            index_name='photos_by_owner_status', limit=limit, offset=offset)
+            index_name='photos_by_owner_status_nb', limit=limit, offset=offset)
         return [Photo(**row) for row in rows]
 
     @staticmethod
@@ -55,6 +55,9 @@ class Photo:
 
         for r in ans['matches']:
             try:
+                # brzydki hack pod sphinxa
+                r['attrs']['nb'] = 2**32 - int(r['attrs']['nb'])
+
                 ret.append(Photo.get(r['attrs']['owner'], r['attrs']['nb']))
             except Photo.DoesNotExist:
                 # Nie martwimy się tym
@@ -68,7 +71,7 @@ class Photo:
     @staticmethod
     def create(owner, desc):
         nb = hsdb.incr('users', ('all_photos', ), '=', (owner, ), return_original=True)[0]['all_photos']
-        hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, nb, 'n', desc))
+        hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, -int(nb), 'n', desc))
         return Photo(owner, nb, 'n', desc)
 
     class DoesNotExist(ObjectDoesNotExist):

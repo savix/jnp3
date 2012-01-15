@@ -18,7 +18,7 @@ def home(request):
     if request.user.is_authenticated():
         return render(request, 'home.html', {
             'photos': Photo.find_by_owner(request.user.id,
-                limit=10, offset=0)
+                limit=settings.PHOTOS_PER_PAGE, offset=0)
             #'photos': Photo.find_by_desc('sushi', 5, 0)[0]
         })
     else:

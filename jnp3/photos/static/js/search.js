@@ -1,5 +1,5 @@
 
-var PHOTOS_PER_PAGE = 20;
+var PHOTOS_PER_PAGE = 4;
 
 function escapeHtml(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
