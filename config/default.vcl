@@ -19,12 +19,12 @@ backend logic2 {
 # static content
 backend static {
     .host = "127.0.0.1";
-    .port = "8080";
+    .port = "8082";
 }
 
 backend photos {
-	  .host = "127.0.0.1";
-		.port = "8079";
+    .host = "127.0.0.1";
+    .port = "8079";
 }
 
 # groups of equivalent servers replicated for performance and roboustness
@@ -47,12 +47,10 @@ sub vcl_recv {
     # content-related load balancing
     if (req.url ~ "^/static/") {
         set req.backend = static;
-		return (lookup);
     }
     # Comment this out, if you want to serve photos with django
     if (req.url ~ "^/photos/" || req.url ~ "^/thumbnails/") {
         set req.backend = photos;
-		return (lookup);
     }
     # ...
 
@@ -120,6 +118,15 @@ sub vcl_miss {
 
 # important section - here is decided wheather or not the response is cached
 sub vcl_fetch {
+    if(beresp.http.X-Varnish-TTL) {
+        C{
+            char *ttl;
+            ttl = VRT_GetHdr(sp, HDR_BERESP, "\016X-Varnish-TTL:");
+            VRT_l_beresp_ttl(sp, atoi(ttl));
+        }C
+        remove beresp.http.X-Varnish-TTL;
+    }
+
     if (beresp.ttl <= 0s ||
         beresp.http.Set-Cookie ||
         beresp.http.Vary == "*") {

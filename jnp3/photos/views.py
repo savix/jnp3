@@ -13,6 +13,7 @@ from django.utils.encoding import smart_unicode
 from tasks import prepare_photo_files
 from models import Photo
 from ..users.models import User
+from jnp3 import varnish
 
 from pymogile import Client, MogileFSError
 
@@ -42,6 +43,7 @@ def upload(request):
         prepare_photo_files.delay(model.owner, model.nb)
         return HttpResponseRedirect('/')
 
+@varnish.cache(0)
 def gallery(request, owner, page):
     try:
         page = int(page)
@@ -58,7 +60,7 @@ def gallery(request, owner, page):
     except User.DoesNotExist:
         return HttpResponseRedirect('/')
 
-
+@varnish.cache(300)
 def photo(request, owner, nb):
     try:
         photo = Photo.get(owner, nb)
@@ -79,12 +81,14 @@ def make_reader(f):
 
 
 # tylko tymczasowo...
+@varnish.cache(300)
 def photo_file(request, owner, nb):
     storage = Client(domain = settings.MOGILEFS_DOMAIN,
             trackers = settings.MOGILEFS_TRACKERS)
     f = storage.read_file(path.join(settings.UNPROCESSED_PHOTOS_DIR, '%s,%s.jpg' % (owner, nb)))
     return HttpResponse(make_reader(f), content_type='image/jpeg')
-    
+
+@varnish.cache(300)
 def photo_thumbnail(request, owner, nb):
     storage = Client(domain = settings.MOGILEFS_DOMAIN,
             trackers = settings.MOGILEFS_TRACKERS)
@@ -92,6 +96,7 @@ def photo_thumbnail(request, owner, nb):
     return HttpResponse(make_reader(f), content_type='image/jpeg')
 
 
+@varnish.cache(0)
 def search(request):
     query = request.GET.get('q', '').strip()
     if query:
@@ -105,6 +110,8 @@ def search(request):
     })
 
 
+# Tutaj mozna pewnie cache'owac troche dluzej
+@varnish.cache(0)
 def api_search(request):
     query = request.GET.get('q', '').strip()
     # uodpornienie na "sphinx injection" - pozwala tylko na proste query
