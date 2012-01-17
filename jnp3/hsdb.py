@@ -35,27 +35,27 @@ def decode_row(row):
     return {column: decode_value(value) for column, value in row}
 
 
-def insert(table, columns, values, index_name=None):
+def insert(table, columns, values, index_name=None, shard = ''):
     fields = zip(columns, encode_values(values))
-    return manager().insert(settings.HS_DBNAME, table, fields, index_name)
+    return manager().insert(settings.HS_DBNAME + str(shard), table, fields, index_name)
 
 
 def update(table, columns, operation, old_values, new_values, \
-        index_name=None, limit=0, offset=0, return_original=False):
-    return manager().update(settings.HS_DBNAME, table, operation, columns,
+        index_name=None, limit=0, offset=0, return_original=False, shard = ''):
+    return manager().update(settings.HS_DBNAME + str(shard), table, operation, columns,
             encode_values(old_values), encode_values(new_values),
             index_name, limit, offset, return_original)
 
 
 def find(table, columns, operation, values,
-        index_name=None, limit=0, offset=0):
-    rows = manager().find(settings.HS_DBNAME, table, operation, columns, encode_values(values),
+        index_name=None, limit=0, offset=0, shard = ''):
+    rows = manager().find(settings.HS_DBNAME + str(shard), table, operation, columns, encode_values(values),
                         index_name, limit, offset)
     return [decode_row(row) for row in rows]
 
 
-def get(table, columns, value, index_name=None):
-    rows = manager().find(settings.HS_DBNAME, table, '=', columns, (encode_value(value), ), index_name, 1, 0)
+def get(table, columns, value, index_name=None, shard = ''):
+    rows = manager().find(settings.HS_DBNAME + str(shard), table, '=', columns, (encode_value(value), ), index_name, 1, 0)
     if rows:
         return decode_row(rows[0])
     else:
@@ -63,12 +63,12 @@ def get(table, columns, value, index_name=None):
 
 
 def delete(table, columns, operation, values,  \
-        index_name=None, limit=0, offset=0, return_original=False):
-    return manager().delete(settings.HS_DBNAME, table, operation, columns, encode_values(values),
+        index_name=None, limit=0, offset=0, return_original=False, shard = ''):
+    return manager().delete(settings.HS_DBNAME + str(shard), table, operation, columns, encode_values(values),
             index_name, limit, offset, return_original)
 
-def incr(table, columns, operation, values, steps=(1, ), index_name=None, limit=0, offset=0, return_original=False):
-    result = manager().incr(settings.HS_DBNAME, table, operation, columns, encode_values(values), encode_values(steps),
+def incr(table, columns, operation, values, steps=(1, ), index_name=None, limit=0, offset=0, return_original=False, shard = ''):
+    result = manager().incr(settings.HS_DBNAME + str(shard), table, operation, columns, encode_values(values), encode_values(steps),
         index_name, limit, offset, return_original)
     if return_original:
         return [decode_row(row) for row in result]

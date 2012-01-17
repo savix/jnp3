@@ -10,6 +10,11 @@ import jnp3.hsdb as hsdb
 
 from sphinxsearch import SphinxClient
 
+import time
+import sys
+
+sc = SphinxClient()
+sc.SetServer('localhost', settings.SPHINX_PORT)
 
 class Photo:
     def __init__(self, owner, nb, status, desc):
@@ -19,14 +24,20 @@ class Photo:
         self.status = status
     
     def ready(self):
-        hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, -self.nb), (self.owner, -self.nb, 'r'))
+        hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, -self.nb), (self.owner, -self.nb, 'r'),
+                shard = self.owner % settings.NUM_SHARDS)
         # To powinno działać - jak nie to się przepisze
         hsdb.incr('users', ('ready_photos', ), '=', (self.owner, ))
         self.status = 'r'
 
     @staticmethod
     def get(owner, nb):
-        rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, -abs(int(nb))), limit=1)
+        start = time.time()
+        rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, -abs(int(nb))), limit=1,
+                shard = int(owner) % settings.NUM_SHARDS)
+        end = time.time()
+        print "Photo.get2: {0}s".format(end - start)
+
         if rows:
             row = rows[0]
             return Photo(row['owner'], row['nb'], row['status'], row['desc'])
@@ -36,15 +47,17 @@ class Photo:
     @staticmethod
     def find_by_owner(owner, limit, offset):
         rows = hsdb.find('photos', ('owner', 'status', 'nb', 'desc'), '=', (owner, 'r'),
-            index_name='photos_by_owner_status_nb', limit=limit, offset=offset)
+            index_name='photos_by_owner_status_nb', limit=limit, offset=offset,
+            shard = int(owner) % settings.NUM_SHARDS)
         return [Photo(**row) for row in rows]
 
     @staticmethod
     def find_by_desc(query, limit, offset, owners=None):
         # szuka w desc używając sphinxa
         # można dać zbiór owner ids i wtedy zwróci wynik tylko dla nich
-        sc = SphinxClient()
-        sc.SetServer('localhost', settings.SPHINX_PORT)
+
+        start = time.time()
+
         sc.SetLimits(offset, limit)
 
         if owners != None:
@@ -52,6 +65,12 @@ class Photo:
 
         ans = sc.Query(query, settings.SPHINX_INDEX)
         ret = []
+
+        end = time.time()
+
+        print "Sphinx Query: {0}s".format(end - start)
+
+        start = time.time()
 
         for r in ans['matches']:
             try:
@@ -70,12 +89,17 @@ class Photo:
         # liczba wszystkich zmatchowanych
         totalFound = ans['total_found']
 
+        end = time.time()
+
+        print "Fetch matches: {0}s".format(end - start)
+
         return (ret, totalFound)
 
     @staticmethod
     def create(owner, desc):
         nb = hsdb.incr('users', ('all_photos', ), '=', (owner, ), return_original=True)[0]['all_photos']
-        hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, -int(nb), 'n', desc))
+        hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, -int(nb), 'n', desc),
+                shard = int(owner) % settings.NUM_SHARDS)
         return Photo(owner, nb, 'n', desc)
 
     class DoesNotExist(ObjectDoesNotExist):

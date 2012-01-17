@@ -77,18 +77,6 @@ CREATE TABLE `sessions` (
     `expire_date` datetime NOT NULL
 );
 
-create table `photos` (
-    `owner` int,
-    `nb` int,
-    `status` varchar(1),
-    `desc` varchar(1024),
-    `id` int not null AUTO_INCREMENT,
-    primary key (`owner`, `nb`),
-    unique (id)
-);
-
-create index photos_by_owner_status_nb on photos (owner, status, nb);
-
 create table `users` (
     `id`           int          not null primary key auto_increment,
     `username`     varchar(255) not null,
@@ -101,6 +89,24 @@ create table `users` (
 -- z kolumn, które nie występują w indeksie, mimo że dokumentacja mówi coś innego
 create unique index `users_by_username` on `users` (
     `username`);
+
+
+# 2 shardy pod photos:
+create database hstest0;
+create database hstest1;
+
+# zrobić dla hstest0 i hstest1 (index też)
+create table `photos` (
+    `owner` int,
+    `nb` int,
+    `status` varchar(1),
+    `desc` varchar(1024),
+    `id` int not null AUTO_INCREMENT,
+    primary key (`owner`, `nb`),
+    unique (id)
+);
+
+create index photos_by_owner_status_nb on photos (owner, status, nb);
 
 
 # Zabawne, że nigrzyba nie chce mi działać handlersocket bez zapychacza
