@@ -268,6 +268,7 @@ rm -rf /usr/mogdata/dev1/* /usr/mogdata/dev2/*
 # w mysql:
 use mogilefs;
 delete from file;
+delete from file_on;
 
 service mogstored restart
 
@@ -320,3 +321,14 @@ apt-get install yui-compressor
 # dla wersji skryptow 1.0:
 yui-compressor --type css -o jnp3/collected_static/css/style-1.0.min.css jnp3/collected_static_dev/css/style.css
 yui-compressor --type js -o jnp3/collected_static/js/search-1.0.min.js jnp3/photos/static/js/search.js
+
+9. Testowanie
+
+pip install lorem-ipsum-generator
+
+# wyczyścić wszystko w baza danych i mogile'u
+sudo sh ./jnp3/testing/cleandb.sh
+
+# populuje bazę danych (to może troszkę zająć, w szczególności zmniejszanie zdjęć będzie jeszcze trochę po tym trwać)
+python ./jnp3/testing/test.py
+

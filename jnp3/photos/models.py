@@ -56,10 +56,14 @@ class Photo:
         for r in ans['matches']:
             try:
                 # brzydki hack pod sphinxa
-                r['attrs']['nb'] = 2**32 - int(r['attrs']['nb'])
+                nb = int(r['attrs']['nb'])
 
-                ret.append(Photo.get(r['attrs']['owner'], r['attrs']['nb']))
+                if nb > 2**31:
+                    nb = 2**32 - nb
+
+                ret.append(Photo.get(r['attrs']['owner'], nb))
             except Photo.DoesNotExist:
+                print "hoho", nb
                 # Nie martwimy się tym
                 pass
 

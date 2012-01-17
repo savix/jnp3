@@ -1,8 +1,17 @@
 
 var PHOTOS_PER_PAGE = 4;
+var WORDS_PER_DESC = 16;
 
 function escapeHtml(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function trim(str, numWords) {
+	var tmp = str.split(" ");
+	var ret = str;
+	if(tmp.length > numWords)
+		ret = tmp.slice(0, numWords).join(" ") + " …";
+	return ret;
 }
 
 
@@ -15,8 +24,8 @@ function renderResponse(photos, pageCount, currentPage) {
         $(photos).each(function(index, photo) {
             html += '<div class="thumbnail">';
             html += '<p><img src="' + photo.thumbnailFile + '"/></p>';
-            html += '<p>' + (photo.description ? escapeHtml(photo.description) : '<i>brak opisu</i>') + '</p>';
-            html += '<p><a href="' + photo.photoPage + '" class="with-icon icon-detail">Szczegóły</a></p>';
+            html += '<div class="desc"><p>' + (photo.description ? escapeHtml(trim(photo.description, WORDS_PER_DESC)) : '<i>brak opisu</i>') + '</p>';
+            html += '<p><a href="' + photo.photoPage + '" class="with-icon icon-detail">Szczegóły</a></p></div>';
             html += '</div> ';
         })
         html += '<p>';
