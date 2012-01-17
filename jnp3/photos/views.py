@@ -110,8 +110,7 @@ def search(request):
     })
 
 
-# Tutaj mozna pewnie cache'owac troche dluzej
-@varnish.cache(0)
+@varnish.cache(300)
 def api_search(request):
     query = request.GET.get('q', '').strip()
     # uodpornienie na "sphinx injection" - pozwala tylko na proste query

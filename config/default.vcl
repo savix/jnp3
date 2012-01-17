@@ -76,7 +76,7 @@ sub vcl_recv {
         /* We only deal with GET and HEAD by default */
         return (pass);
     }
-    if (req.http.Authorization || req.http.Cookie) {
+    if (req.http.Authorization/* || req.http.Cookie*/) {
         /* Not cacheable by default */
         return (pass);
     }
@@ -118,6 +118,14 @@ sub vcl_miss {
 
 # important section - here is decided wheather or not the response is cached
 sub vcl_fetch {
+    # cache all photos and static files
+    if (req.url ~ "^/static/") {
+        set beresp.ttl = 600s;
+    }
+    if (req.url ~ "^/photos/" || req.url ~ "^/thumbnails/") {
+        set beresp.ttl = 600s;
+    }
+
     if(beresp.http.X-Varnish-TTL) {
         C{
             char *ttl;
