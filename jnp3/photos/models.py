@@ -32,11 +32,8 @@ class Photo:
 
     @staticmethod
     def get(owner, nb):
-        start = time.time()
         rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, -abs(int(nb))), limit=1,
                 shard_seed = int(owner))
-        end = time.time()
-        print "Photo.get2: {0}s".format(end - start)
 
         if rows:
             row = rows[0]
@@ -56,8 +53,6 @@ class Photo:
         # szuka w desc używając sphinxa
         # można dać zbiór owner ids i wtedy zwróci wynik tylko dla nich
 
-        start = time.time()
-
         sc.SetLimits(offset, limit)
 
         if owners != None:
@@ -65,12 +60,6 @@ class Photo:
 
         ans = sc.Query(query, settings.SPHINX_INDEX)
         ret = []
-
-        end = time.time()
-
-        print "Sphinx Query: {0}s".format(end - start)
-
-        start = time.time()
 
         for r in ans['matches']:
             try:
@@ -82,16 +71,11 @@ class Photo:
 
                 ret.append(Photo.get(r['attrs']['owner'], nb))
             except Photo.DoesNotExist:
-                print "hoho", nb
                 # Nie martwimy się tym
                 pass
 
         # liczba wszystkich zmatchowanych
         totalFound = ans['total_found']
-
-        end = time.time()
-
-        print "Fetch matches: {0}s".format(end - start)
 
         return (ret, totalFound)
 
