@@ -10,7 +10,7 @@
     <div class="header">
         <h1><a href="/"><i>myFotka</i></a></h1>
         {% if user.is_authenticated %}
-            <p>Witaj, <span class="with-icon icon-user">{{user}}</span>! <a href="/logout" class="with-icon icon-logout">Wyloguj się</a></p>
+            <p>Witaj, <a class="with-icon icon-user" href="/gallery/{{user.id}}/1">{{user}}</a>! <a href="/logout" class="with-icon icon-logout">Wyloguj się</a></p>
         {% else %}
             <p>Witaj, <span class="with-icon icon-anonymous">nieznajomy</span>!</p>
         {% endif %}

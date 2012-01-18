@@ -5,8 +5,16 @@
 {% block body %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p>Niepoprawna nazwa użytkownika i/lub hasło.</p>
 {% endif %}
+
+<h2>Co chcesz zrobić?</h2>
+
+<ul>
+    <li><a href="/search">Przeszukaj bazę zdjęć</a></li>
+</ul>
+
+<h2>Logowanie</h2>
 
 <div class="columns">
 <div class="left-column">
