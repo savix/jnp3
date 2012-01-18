@@ -324,8 +324,14 @@ Listen 8082
 # minimalizacja javascript'ow i css'ow
 apt-get install yui-compressor
 
+# przez manage.py (nie trzeba robic collectstatic)
+python manage.py deploystatic
+# lub, dla versji 1.1 (dla innych sie domyslcie)
+python manage.py deploystatic -V 1.1
+
+# albo recznie:
 # dla wersji skryptow 1.0:
-yui-compressor --type css -o jnp3/collected_static/css/style-1.0.min.css jnp3/collected_static_dev/css/style.css
+yui-compressor --type css -o jnp3/collected_static/css/style-1.0.min.css jnp3/static/css/style.css
 yui-compressor --type js -o jnp3/collected_static/js/search-1.0.min.js jnp3/photos/static/js/search.js
 
 9. Testowanie

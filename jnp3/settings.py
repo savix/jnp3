@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'djcelery',
     'jnp3.photos',
+    'jnp3',
 )
 
 SESSION_ENGINE = 'jnp3.session_backend'
