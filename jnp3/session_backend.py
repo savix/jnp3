@@ -13,10 +13,14 @@ import hsdb
 
 TABLE_NAME = 'sessions'
 
+def make_seed(session_key):
+    return 31 * (ord(session_key[0]) + 31 * (ord(session_key[1]) + 31 * ord(session_key[2])))
+
 class SessionStore(SessionBase):
 
     def load(self):
-        row = hsdb.get(TABLE_NAME, ('session_key', 'session_data', 'expire_date'), self.session_key)
+        row = hsdb.get(TABLE_NAME, ('session_key', 'session_data', 'expire_date'), self.session_key,
+            shard_seed=make_seed(self.session_key))
         if row and datetime.now() <= datetime.strptime(row['expire_date'], '%Y-%m-%d %H:%M:%S'):
             return self.decode(force_unicode(row['session_data']))
         else:
@@ -27,7 +31,7 @@ class SessionStore(SessionBase):
         """
         Check if session exists.
         """
-        return bool(hsdb.get(TABLE_NAME, ('session_key', ), session_key))
+        return bool(hsdb.get(TABLE_NAME, ('session_key', ), session_key, shard_seed=make_seed(session_key)))
 
     def create(self):
         """
@@ -58,9 +62,10 @@ class SessionStore(SessionBase):
                 raise CreateError
                 
             hsdb.update(TABLE_NAME, ('session_key', 'session_data', 'expire_date'), '=',
-                (self.session_key, ), values)
+                (self.session_key, ), values, shard_seed=make_seed(values[0]))
         else:
-            hsdb.insert(TABLE_NAME, ('session_key', 'session_data', 'expire_date'), values)
+            hsdb.insert(TABLE_NAME, ('session_key', 'session_data', 'expire_date'), values, 
+                shard_seed=make_seed(values[0]))
             
     def delete(self, session_key=None):
         if session_key is None:
@@ -68,4 +73,4 @@ class SessionStore(SessionBase):
                 return
             session_key = self._session_key
 
-        hsdb.delete(TABLE_NAME, ('session_key', ), '=', (session_key, ))
+        hsdb.delete(TABLE_NAME, ('session_key', ), '=', (session_key, ), shard_seed=make_seed(session_key))
