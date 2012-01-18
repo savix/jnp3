@@ -170,8 +170,26 @@ LOGGING = {
     }
 }
 
-HS_DBNAME = 'hstest'
-
+HS_SHARDS = (
+    {
+        'READ_SERVERS': None,
+        'WRITE_SERVERS': None,
+        'DATABASE': 'hstest',
+        'TABLES': ('sessions', 'users')
+    },
+    {
+        'READ_SERVERS': None,
+        'WRITE_SERVERS': None,
+        'DATABASE': 'hstest0',
+        'TABLES': ('photos', )
+    },
+    {
+        'READ_SERVERS': None,
+        'WRITE_SERVERS': None,
+        'DATABASE': 'hstest1',
+        'TABLES': ('photos', )
+    },
+)
 
 MAX_PHOTO_SIZE = 2097152 # 2MB
 
@@ -188,5 +206,3 @@ MOGILEFS_DOMAIN = 'mogile'
 MOGILEFS_TRACKERS = ['127.0.0.1:7001']
 
 MAX_LIMIT = 30
-
-NUM_SHARDS = 2

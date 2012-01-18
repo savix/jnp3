@@ -25,7 +25,7 @@ class Photo:
     
     def ready(self):
         hsdb.update('photos', ('owner', 'nb', 'status'), '=', (self.owner, -self.nb), (self.owner, -self.nb, 'r'),
-                shard = self.owner % settings.NUM_SHARDS)
+                shard_seed = self.owner)
         # To powinno działać - jak nie to się przepisze
         hsdb.incr('users', ('ready_photos', ), '=', (self.owner, ))
         self.status = 'r'
@@ -34,7 +34,7 @@ class Photo:
     def get(owner, nb):
         start = time.time()
         rows = hsdb.find('photos', ('owner', 'nb', 'status', 'desc'), '=', (owner, -abs(int(nb))), limit=1,
-                shard = int(owner) % settings.NUM_SHARDS)
+                shard_seed = int(owner))
         end = time.time()
         print "Photo.get2: {0}s".format(end - start)
 
@@ -48,7 +48,7 @@ class Photo:
     def find_by_owner(owner, limit, offset):
         rows = hsdb.find('photos', ('owner', 'status', 'nb', 'desc'), '=', (owner, 'r'),
             index_name='photos_by_owner_status_nb', limit=limit, offset=offset,
-            shard = int(owner) % settings.NUM_SHARDS)
+            shard_seed = int(owner))
         return [Photo(**row) for row in rows]
 
     @staticmethod
@@ -99,7 +99,7 @@ class Photo:
     def create(owner, desc):
         nb = hsdb.incr('users', ('all_photos', ), '=', (owner, ), return_original=True)[0]['all_photos']
         hsdb.insert('photos', ('owner', 'nb', 'status', 'desc'), (owner, -int(nb), 'n', desc),
-                shard = int(owner) % settings.NUM_SHARDS)
+                shard_seed = int(owner))
         return Photo(owner, nb, 'n', desc)
 
     class DoesNotExist(ObjectDoesNotExist):
