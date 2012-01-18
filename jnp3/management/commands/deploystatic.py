@@ -19,8 +19,8 @@ class Command(BaseCommand):
 
         ver = options.get('Version')
 
-        cmd_js = 'yui-compressor --type css '
-        cmd_css = 'yui-compressor --type js '
+        cmd_js = 'yui-compressor --type js '
+        cmd_css = 'yui-compressor --type css '
 
         path_js = path.join(settings.STATIC_ROOT, 'js')
         path_css = path.join(settings.STATIC_ROOT, 'css')
@@ -42,5 +42,5 @@ class Command(BaseCommand):
             output = path.join(path_css, name + '-' + ver + '.min' + ext)
             old_file = path.join(path_css, css_file)
             if not is_min(old_file):
-                system(cmd_js + '-o ' + output + ' ' + old_file)
+                system(cmd_css + '-o ' + output + ' ' + old_file)
                 remove(old_file)

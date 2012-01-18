@@ -19,7 +19,7 @@ backend logic2 {
 # static content
 backend static {
     .host = "127.0.0.1";
-    .port = "8082";
+    .port = "8080";
 }
 
 backend photos {

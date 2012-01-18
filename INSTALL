@@ -314,13 +314,6 @@ python manage.py celeryd -l info
 
 8. Optymalizacja interfejsu
 
-# ustawiamy cache'owanie w przeglądarce na rok:
-# uaktualniamy plik /etc/apache2/sites-enabled/000-default
-# zgodnie z wirtualka u Sira
-
-# w pliku /etc/apache2/ports.conf dopisujemy (za Listen 8080)
-Listen 8082
-
 # minimalizacja javascript'ow i css'ow
 apt-get install yui-compressor
 
