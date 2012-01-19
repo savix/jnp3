@@ -1,0 +1,11 @@
+<VirtualHost *:8080>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www
+
+        Alias /static /home/jnp/repo/jnp3/collected_static
+        <Directory /home/jnp/repo/jnp3/collected_static>
+                ExpiresActive on
+                ExpiresDefault "access plus 1 month"
+        </Directory>
+        WSGIScriptAlias / /home/jnp/repo/jnp3/wsgi.py
+</VirtualHost>
